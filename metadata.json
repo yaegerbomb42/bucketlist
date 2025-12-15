@@ -1,0 +1,5 @@
+{
+  "name": "Yaeger's Bucket",
+  "description": "A sleek, persistent bucket list application featuring a 3D gold bucket interface, split-view organization for active and completed goals, and local data persistence.",
+  "requestFramePermissions": []
+}
