@@ -17,8 +17,8 @@ export const BucketCard: React.FC<BucketCardProps> = ({ item, onToggle, onDelete
         group relative p-5 rounded-xl border backdrop-blur-sm transition-all duration-300 ease-out
         hover:translate-x-1
         ${isCompleted 
-          ? 'bg-slate-900/30 border-slate-800/50' 
-          : 'bg-[#0f0f20]/80 border-slate-800 hover:border-neon-blue/50 hover:shadow-[0_0_20px_rgba(0,243,255,0.1)]'
+          ? 'bg-slate-900/40 border-slate-800' 
+          : 'bg-[#13132b]/90 border-slate-700 hover:border-neon-blue/60 hover:shadow-[0_0_20px_rgba(0,243,255,0.15)]'
         }
       `}
     >
@@ -30,7 +30,7 @@ export const BucketCard: React.FC<BucketCardProps> = ({ item, onToggle, onDelete
             mt-1 flex-shrink-0 w-6 h-6 rounded-md border flex items-center justify-center transition-all duration-300
             ${isCompleted 
               ? 'bg-neon-pink border-neon-pink text-white shadow-[0_0_10px_#ff00ff]' 
-              : 'border-slate-600 bg-slate-900/50 text-transparent hover:border-neon-blue hover:shadow-[0_0_8px_#00f3ff]'
+              : 'border-slate-500 bg-slate-800/50 text-transparent hover:border-neon-blue hover:shadow-[0_0_8px_#00f3ff]'
             }
           `}
         >
@@ -42,7 +42,7 @@ export const BucketCard: React.FC<BucketCardProps> = ({ item, onToggle, onDelete
           <p 
             className={`
               text-lg font-medium break-words leading-snug transition-all duration-300
-              ${isCompleted ? 'text-slate-600 line-through decoration-slate-700' : 'text-slate-200 group-hover:text-white'}
+              ${isCompleted ? 'text-slate-400 line-through decoration-slate-600' : 'text-white group-hover:text-neon-blue/90'}
             `}
           >
             {item.text}
@@ -67,7 +67,7 @@ export const BucketCard: React.FC<BucketCardProps> = ({ item, onToggle, onDelete
             opacity-0 group-hover:opacity-100 focus:opacity-100
             transition-all duration-200 
             p-2 rounded-lg
-            text-slate-600 hover:text-red-500 hover:bg-red-500/10 hover:shadow-[0_0_10px_rgba(239,68,68,0.2)]
+            text-slate-500 hover:text-red-400 hover:bg-red-500/10 hover:shadow-[0_0_10px_rgba(239,68,68,0.2)]
             transform translate-x-2 group-hover:translate-x-0
           "
           title="Delete Instantly"

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { BucketItem } from './types';
-import { useLocalStorage } from './hooks/useLocalStorage';
+import { useBucketPersistence } from './hooks/useBucketPersistence';
 import { GoldBucket } from './components/GoldBucket';
 import { BucketCard } from './components/BucketCard';
-import { Plus } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 
 const App: React.FC = () => {
-  const [items, setItems] = useLocalStorage<BucketItem[]>('yaegers-bucket-db-v1', []);
+  // Use the new Blob persistence hook instead of local storage
+  const [items, setItems, loading] = useBucketPersistence([]);
   const [inputValue, setInputValue] = useState('');
 
   const handleAddItem = (e: React.FormEvent) => {
@@ -38,7 +39,7 @@ const App: React.FC = () => {
     );
   };
 
-  // Instant delete, no confirmation
+  // Instant delete
   const deleteItem = (id: string) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
@@ -59,8 +60,22 @@ const App: React.FC = () => {
   const doneCount = completedItems.length;
   const progress = total === 0 ? 0 : Math.round((doneCount / total) * 100);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#050510] flex items-center justify-center text-neon-blue">
+        <div className="flex flex-col items-center gap-4 animate-pulse">
+           <div className="w-16 h-16">
+             <GoldBucket />
+           </div>
+           <Loader2 className="animate-spin" size={32} />
+           <p className="text-sm font-mono tracking-widest text-slate-400">SYNCING...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#050510] text-slate-100 pb-20 font-sans selection:bg-neon-pink selection:text-white">
+    <div className="min-h-screen bg-[#050510] text-gray-100 pb-20 font-sans selection:bg-neon-pink selection:text-white">
       
       {/* Vibrant Background Effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
@@ -96,22 +111,16 @@ const App: React.FC = () => {
           {/* Input Form */}
           <form onSubmit={handleAddItem} className="w-full max-w-xl relative group z-10">
             <div className="absolute -inset-0.5 bg-gradient-to-r from-neon-pink via-purple-600 to-neon-blue rounded-2xl blur opacity-30 group-hover:opacity-70 transition duration-500"></div>
-            <div className="relative flex items-center bg-[#0a0a1a] rounded-xl overflow-hidden shadow-2xl border border-slate-800 group-focus-within:border-slate-600 transition-colors">
+            <div className="relative flex items-center bg-[#0a0a1a] rounded-xl overflow-hidden shadow-2xl border border-slate-700 group-focus-within:border-slate-500 transition-colors">
               <input
                 type="text"
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="..."
-                className="w-full bg-transparent border-none text-xl text-white px-6 py-4 focus:outline-none focus:ring-0 placeholder:text-slate-700 font-medium tracking-wide"
+                className="w-full bg-transparent border-none text-xl text-white px-6 py-4 focus:outline-none focus:ring-0 placeholder:text-slate-600 font-medium tracking-wide text-center"
                 autoFocus
               />
-              <button 
-                type="submit"
-                disabled={!inputValue.trim()}
-                className="mr-2 p-3 bg-gradient-to-br from-gold-400 to-gold-600 hover:from-gold-300 hover:to-gold-500 text-black rounded-lg transition-transform hover:scale-105 active:scale-95 disabled:opacity-50 disabled:hover:scale-100 disabled:grayscale"
-              >
-                <Plus size={24} strokeWidth={3} />
-              </button>
+              {/* Button removed for cleaner look, submit on Enter */}
             </div>
           </form>
         </header>
@@ -125,18 +134,18 @@ const App: React.FC = () => {
               <h2 className="text-2xl font-bold text-white flex items-center gap-3 tracking-tight">
                 <span className="w-2 h-2 rounded-full bg-neon-blue shadow-[0_0_10px_#00f3ff] animate-pulse"></span>
                 Active
-                <span className="text-sm font-semibold text-slate-600 bg-slate-900 px-2 py-0.5 rounded-full ml-auto border border-slate-800">{activeItems.length}</span>
+                <span className="text-sm font-semibold text-slate-400 bg-slate-900 px-2 py-0.5 rounded-full ml-auto border border-slate-700">{activeItems.length}</span>
               </h2>
             </div>
             
             <div className="flex flex-col gap-3">
               {activeItems.length === 0 && completedItems.length === 0 ? (
-                <div className="text-center py-16 opacity-30 border border-dashed border-slate-800 rounded-2xl bg-slate-900/20">
-                  <p className="text-slate-500 text-sm font-mono tracking-widest uppercase">Bucket Empty</p>
+                <div className="text-center py-16 opacity-40 border border-dashed border-slate-700 rounded-2xl bg-slate-900/30">
+                  <p className="text-slate-400 text-sm font-mono tracking-widest uppercase">Bucket Empty</p>
                 </div>
               ) : activeItems.length === 0 ? (
-                <div className="text-center py-8 opacity-50">
-                  <p className="text-slate-500 font-light italic">All caught up.</p>
+                <div className="text-center py-8 opacity-60">
+                  <p className="text-slate-400 font-light italic">All caught up.</p>
                 </div>
               ) : (
                 activeItems.map(item => (
@@ -154,17 +163,17 @@ const App: React.FC = () => {
           {/* Completed Items */}
           <section className="flex flex-col gap-4 relative">
             <div className="flex items-center justify-between pb-4 border-b border-slate-800/50 mb-2">
-              <h2 className="text-2xl font-bold text-slate-500 flex items-center gap-3 tracking-tight group">
+              <h2 className="text-2xl font-bold text-slate-400 flex items-center gap-3 tracking-tight group">
                 <span className="w-2 h-2 rounded-full bg-neon-pink shadow-[0_0_10px_#ff00ff] group-hover:animate-pulse"></span>
                 Done
-                <span className="text-sm font-semibold text-slate-600 bg-slate-900 px-2 py-0.5 rounded-full ml-auto border border-slate-800">{completedItems.length}</span>
+                <span className="text-sm font-semibold text-slate-500 bg-slate-900 px-2 py-0.5 rounded-full ml-auto border border-slate-800">{completedItems.length}</span>
               </h2>
             </div>
 
             <div className="flex flex-col gap-3">
               {completedItems.length === 0 ? (
-                <div className="text-center py-16 opacity-20">
-                  <p className="text-slate-600 text-sm">Nothing yet.</p>
+                <div className="text-center py-16 opacity-30">
+                  <p className="text-slate-500 text-sm">Nothing yet.</p>
                 </div>
               ) : (
                 completedItems.map(item => (
