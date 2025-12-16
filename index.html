@@ -20,6 +20,22 @@
                 500: '#EAB308',
                 600: '#CA8A04',
                 700: '#A16207',
+              },
+              neon: {
+                blue: '#00f3ff',
+                pink: '#ff00ff',
+                purple: '#bc13fe',
+                bg: '#050510'
+              }
+            },
+            animation: {
+              'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-10px)' },
               }
             }
           }
@@ -28,33 +44,34 @@
     </script>
     <style>
       body {
-        background-color: #0f172a; /* slate-900 */
-        color: #f1f5f9; /* slate-100 */
+        background-color: #050510; /* neon-bg */
+        color: #f1f5f9;
+        overflow-x: hidden;
       }
-      /* Custom scrollbar for a sleek look */
+      /* Custom scrollbar */
       ::-webkit-scrollbar {
-        width: 8px;
+        width: 6px;
       }
       ::-webkit-scrollbar-track {
-        background: #1e293b; 
+        background: #0a0a1a; 
       }
       ::-webkit-scrollbar-thumb {
-        background: #475569; 
-        border-radius: 4px;
+        background: #334155; 
+        border-radius: 3px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #64748b; 
+        background: #475569; 
       }
     </style>
   <script type="importmap">
 {
   "imports": {
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
     "vite": "https://esm.sh/vite@^7.3.0",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
   }
 }
 </script>
