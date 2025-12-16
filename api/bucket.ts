@@ -1,5 +1,9 @@
 import { put, list } from '@vercel/blob';
 
+export const config = {
+  runtime: 'edge',
+};
+
 export default async function handler(request: Request) {
   // Handle CORS
   if (request.method === 'OPTIONS') {
