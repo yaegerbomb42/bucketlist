@@ -1,28 +1,21 @@
 import { put, list } from '@vercel/blob';
 
-export const config = {
-  runtime: 'edge',
-};
+export default async function handler(request: any, response: any) {
+  // Set CORS headers
+  response.setHeader('Access-Control-Allow-Origin', '*');
+  response.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-export default async function handler(request: Request) {
-  // Handle CORS
+  // Handle CORS preflight
   if (request.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type',
-      },
-    });
+    return response.status(200).end();
   }
 
   // Check for environment variable
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return new Response(
-      JSON.stringify({ error: 'BLOB_READ_WRITE_TOKEN is missing. Did you connect the Blob store in Vercel?' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return response.status(500).json({ 
+      error: 'BLOB_READ_WRITE_TOKEN is missing. Did you connect the Blob store in Vercel?' 
+    });
   }
 
   const filename = 'bucket-list.json';
@@ -33,45 +26,36 @@ export default async function handler(request: Request) {
       const blob = blobs.find((b) => b.pathname === filename);
 
       if (!blob) {
-        return new Response(JSON.stringify([]), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
+        return response.status(200).json([]);
       }
 
       // Fetch the JSON from the blob URL
-      const response = await fetch(blob.url);
-      if (!response.ok) {
+      // Node.js 18+ (Vercel default) supports native fetch
+      const fetchRes = await fetch(blob.url);
+      if (!fetchRes.ok) {
          throw new Error('Failed to fetch blob file');
       }
-      const data = await response.json();
+      const data = await fetchRes.json();
 
-      return new Response(JSON.stringify(data), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return response.status(200).json(data);
     }
 
     if (request.method === 'POST') {
-      const data = await request.json();
+      // In Vercel Node.js functions, request.body is automatically parsed 
+      // when content-type is application/json, which our hook sends.
+      const data = request.body;
 
       await put(filename, JSON.stringify(data), {
         access: 'public',
         addRandomSuffix: false,
       });
 
-      return new Response(JSON.stringify({ success: true }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return response.status(200).json({ success: true });
     }
 
-    return new Response('Method not allowed', { status: 405 });
+    return response.status(405).send('Method not allowed');
   } catch (error: any) {
     console.error('API Error:', error);
-    return new Response(JSON.stringify({ error: error.message || 'Internal Server Error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return response.status(500).json({ error: error.message || 'Internal Server Error' });
   }
 }

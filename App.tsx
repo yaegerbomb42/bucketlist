@@ -4,6 +4,7 @@ import { useBucketPersistence } from './hooks/useBucketPersistence';
 import { GoldBucket } from './components/GoldBucket';
 import { BucketCard } from './components/BucketCard';
 import { Loader2 } from 'lucide-react';
+import confetti from 'canvas-confetti';
 
 const App: React.FC = () => {
   // Use the new Blob persistence hook instead of local storage
@@ -29,9 +30,21 @@ const App: React.FC = () => {
     setItems((prev) => 
       prev.map((item) => {
         if (item.id === id) {
+          const isCompleting = !item.completedAt;
+          
+          if (isCompleting) {
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 },
+              colors: ['#00f3ff', '#ff00ff', '#FACC15'],
+              disableForReducedMotion: true
+            });
+          }
+
           return {
             ...item,
-            completedAt: item.completedAt ? null : new Date().toISOString()
+            completedAt: isCompleting ? new Date().toISOString() : null
           };
         }
         return item;
@@ -120,7 +133,9 @@ const App: React.FC = () => {
                 className="w-full bg-transparent border-none text-xl text-white px-6 py-4 focus:outline-none focus:ring-0 placeholder:text-slate-600 font-medium tracking-wide text-center"
                 autoFocus
               />
-              {/* Button removed for cleaner look, submit on Enter */}
+              <div className={`absolute right-4 text-xs text-slate-500 font-mono pointer-events-none transition-opacity duration-300 ${inputValue.trim() ? 'opacity-100' : 'opacity-0'}`}>
+                PRESS ENTER ↵
+              </div>
             </div>
           </form>
         </header>
