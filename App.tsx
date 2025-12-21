@@ -3,6 +3,7 @@ import { BucketItem } from './types';
 import { useBucketPersistence } from './hooks/useBucketPersistence';
 import { GoldBucket } from './components/GoldBucket';
 import { BucketCard } from './components/BucketCard';
+import { ParticleFractalBackground } from './components/ParticleFractalBackground';
 import { Loader2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -88,16 +89,19 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#050510] text-gray-100 pb-20 font-sans selection:bg-neon-pink selection:text-white">
+    <div className="min-h-screen text-gray-100 pb-20 font-sans selection:bg-neon-pink selection:text-white relative">
       
-      {/* Vibrant Background Effects */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[120px] animate-pulse-slow"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900/20 rounded-full blur-[120px] animate-pulse-slow"></div>
-        <div className="absolute top-[20%] right-[20%] w-[20%] h-[20%] bg-gold-600/10 rounded-full blur-[100px]"></div>
+      {/* Particle Fractal Background */}
+      <ParticleFractalBackground />
+      
+      {/* Additional subtle overlay effects */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-10">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/10 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-blue-900/10 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div className="absolute top-[20%] right-[20%] w-[20%] h-[20%] bg-gold-600/5 rounded-full blur-[100px]"></div>
       </div>
 
-      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 z-20">
         
         {/* Header Section */}
         <header className="pt-16 pb-12 flex flex-col items-center justify-center text-center">
