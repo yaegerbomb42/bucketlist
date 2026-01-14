@@ -3,7 +3,7 @@ import { BucketItem } from './types';
 import { useBucketPersistence } from './hooks/useBucketPersistence';
 import { GoldBucket } from './components/GoldBucket';
 import { BucketCard } from './components/BucketCard';
-import { ParticleFractalBackground } from './components/ParticleFractalBackground';
+import { MotivationalAbstractBackground } from './components/MotivationalAbstractBackground';
 import { Loader2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -91,8 +91,8 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen text-gray-100 pb-20 font-sans selection:bg-neon-pink selection:text-white relative">
       
-      {/* Particle Fractal Background */}
-      <ParticleFractalBackground />
+      {/* Motivational Abstract Background */}
+      <MotivationalAbstractBackground />
       
       {/* Additional subtle overlay effects */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-10">
